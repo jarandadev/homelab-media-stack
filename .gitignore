@@ -1,0 +1,11 @@
+# Configuration
+.env
+
+# Persistence
+config/
+data/
+
+# System
+*.log
+.DS_Store
+Thumbs.db
