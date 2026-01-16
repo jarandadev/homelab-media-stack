@@ -3,9 +3,12 @@ services:
     image: jellyfin/jellyfin:latest
     container_name: jellyfin
     user: ${PUID}:${PGID}
-    group_add:
-      - 992
-      - 44
+    # HWA: Uncomment devices/group_add for Intel/AMD Quicksync
+    # group_add:
+    #   - "992" # render
+    #   - "44"  # video
+    # devices:
+    #   - /dev/dri:/dev/dri
     restart: unless-stopped
     ports:
       - 8096:8096
@@ -15,8 +18,8 @@ services:
     volumes:
       - ${CONFIG_DIR}/jellyfin:/config
       - ${DATA_DIR}/media:/media
-    devices:
-      - /dev/dri:/dev/dri
+    networks:
+      - media_network
 
   jellyseerr:
     image: fallenbagel/jellyseerr:latest
@@ -30,6 +33,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ${CONFIG_DIR}/jellyseerr:/app/config
+    networks:
+      - media_network
 
   qbittorrent:
     image: lscr.io/linuxserver/qbittorrent:latest
@@ -47,6 +52,8 @@ services:
     volumes:
       - ${CONFIG_DIR}/qbittorrent:/config
       - ${DATA_DIR}:/data
+    networks:
+      - media_network
 
   prowlarr:
     image: lscr.io/linuxserver/prowlarr:latest
@@ -60,6 +67,8 @@ services:
       - TZ=${TZ}
     volumes:
       - ${CONFIG_DIR}/prowlarr:/config
+    networks:
+      - media_network
 
   radarr:
     image: lscr.io/linuxserver/radarr:latest
@@ -74,6 +83,8 @@ services:
     volumes:
       - ${CONFIG_DIR}/radarr:/config
       - ${DATA_DIR}:/data
+    networks:
+      - media_network
     
   sonarr:
     image: lscr.io/linuxserver/sonarr:latest
@@ -88,6 +99,8 @@ services:
     volumes:
       - ${CONFIG_DIR}/sonarr:/config
       - ${DATA_DIR}:/data
+    networks:
+      - media_network
 
   bazarr:
     image: lscr.io/linuxserver/bazarr:latest
@@ -102,3 +115,20 @@ services:
     volumes:
       - ${CONFIG_DIR}/bazarr:/config
       - ${DATA_DIR}:/data
+    networks:
+      - media_network
+
+  flaresolverr:
+      image: ghcr.io/flaresolverr/flaresolverr:latest
+      container_name: flaresolverr
+      restart: unless-stopped
+      ports:
+        - 8191:8191
+      environment:
+        - TZ=${TZ}
+      networks:
+        - media_network
+
+networks:
+  media_network:
+    driver: bridge
