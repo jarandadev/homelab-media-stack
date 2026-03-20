@@ -20,7 +20,7 @@ To enable **Hardlinks** and **Atomic Moves**, everything under `/data` **must li
 
 ```
 .
-├── docker-compose.yml
+├── compose.yaml
 ├── .env
 ├── config/                 # Persistent container configuration
 └── data/                   # Persistent data
@@ -57,7 +57,7 @@ nano .env
 ### 3. Deployment
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 Access services via `http://<host>:<port>`.
 
